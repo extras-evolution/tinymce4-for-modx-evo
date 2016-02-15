@@ -128,6 +128,7 @@ class TinyMCE4
             case 'portuguese'            : $lc = 'pt_PT'; break;
             case 'russian'               :
             case 'russian-utf8'          : $lc = 'ru'; break;
+            case 'ukrainian'             : $lc = 'uk'; break;
             case 'svenska'               :
             case 'svenska-utf8'          : $lc = 'sv'; break;
             case 'chinese'               :
