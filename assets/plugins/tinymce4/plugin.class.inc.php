@@ -83,12 +83,13 @@ class TinyMCE4
         
         foreach($cfg as $k=>$v)
         {
-            if(strpos($v,"'")!==false)
-                $v = str_replace("'", "\\'", $v);
             if (in_array($k, array('style_formats'))){
                 $cfg[$k] = "    {$k}:{$v}";
-            }else{
+            } elseif(!is_bool($v)!==false) {
                 $cfg[$k] = "    {$k}:'{$v}'";
+            } else {
+                $v = $v ? 'true':'false';
+                $cfg[$k] = "    {$k}:{$v}";
             }
         }
 
