@@ -8,7 +8,7 @@ class TinyMCE4
     {
         global $modx;
         $current_path = str_replace('\\','/',dirname(__FILE__)).'/';
-        if(strpos($current_path,MODX_BASE_PATH)!==false)
+        if(strpos($current_path,MODX_BASE_PATH)===0)
         {
             $path = substr($current_path,strlen(MODX_BASE_PATH));
         }
