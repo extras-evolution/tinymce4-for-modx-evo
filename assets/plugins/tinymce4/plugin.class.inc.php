@@ -4,7 +4,7 @@ class TinyMCE4
 {
     var $params;
     
-    function TinyMCE4()
+    function __construct()
     {
         global $modx;
         $current_path = str_replace('\\','/',dirname(__FILE__)).'/';
