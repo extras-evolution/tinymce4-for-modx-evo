@@ -24,7 +24,6 @@ class TinyMCE4
         $params = & $this->params;
         $mce_path = $params['mce_path'];
         $mce_url  = $params['mce_url'];
-        $lang_code = $this->get_lang($modx->config['manager_language']);
         $elements = array();
         foreach($params['elements'] as $v)
         {
@@ -79,9 +78,8 @@ class TinyMCE4
         $cfg['toolbar1'] = "undo redo | cut copy paste | searchreplace | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | styleselect";
         $cfg['toolbar2'] = "link unlink anchor image media codesample table | hr removeformat | subscript superscript charmap | nonbreaking | visualchars visualblocks print preview fullscreen code";
 
-
-        if($lang_code!=='en')
-            $cfg['language_url'] = "{$mce_url}tinymce/langs/{$lang_code}.js";
+        $lang_code = $this->get_lang($modx->config['manager_language']);
+        if($lang_code!=='en') $cfg['language'] = $lang_code;
         
         foreach($cfg as $k=>$v)
         {
