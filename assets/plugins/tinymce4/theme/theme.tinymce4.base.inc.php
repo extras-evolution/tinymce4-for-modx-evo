@@ -41,8 +41,8 @@ $this->set('statusbar',             true,                           'bool' );   
 $this->set('document_base_url',     MODX_SITE_URL,                  'string' );     // https://www.tinymce.com/docs/configure/url-handling/#document_base_url
 $this->set('entity_encoding', $this->pluginParams['pluginEntityEncoding'],'string');// https://www.tinymce.com/docs/configure/content-filtering/#encodingtypes
 $this->set('entities',        $this->pluginParams['pluginEntities'],      'string');// https://www.tinymce.com/docs/configure/content-filtering/#entities
-//$this->set('language',              $this->lang('lang_code'),       'string');      // https://www.tinymce.com/docs/configure/localization/#language
-//$this->set('language_url',          $this->pluginParams['base_url'].'tinymce/langs/'. $this->lang('lang_code') .'.js', 'string');   // https://www.tinymce.com/docs/configure/localization/#language_url
+$this->set('language',              $this->lang('lang_code'),       'string');      // https://www.tinymce.com/docs/configure/localization/#language
+$this->set('language_url',          $this->pluginParams['base_url'].'tinymce/langs/'. $this->lang('lang_code') .'.js', 'string');   // https://www.tinymce.com/docs/configure/localization/#language_url
 $this->set('schema',                $modxParams['schema'],          'string' );     // https://www.tinymce.com/docs/configure/content-filtering/#schema
 $this->set('element_format',        $modxParams['element_format'],  'string' );     // https://www.tinymce.com/docs/configure/content-filtering/#element_format
 
