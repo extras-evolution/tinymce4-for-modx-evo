@@ -3,12 +3,12 @@
    Base: v4.3.4
 */
 
-// @todo: add documentDirty
 // @todo: prepare all needed themes
 // @todo: add https://www.tinymce.com/docs/configure/content-filtering/#invalid_styles
 // @todo: add https://www.tinymce.com/docs/configure/content-filtering/#remove_trailing_brs
 // @todo: add plugin-config "Disabled Buttons" to bridge, remove every string from setting 'toolbar1', 'toolbar2' etc
 // @todo: Link-Plugin -> add option "choose directly from Modx-Ressource-Tree" like in CKEditor 4?
+// @todo: modify save-plugin: Enable save-button and STRG-S
 
 // Editor-Settings
 $editorLabel    = 'TinyMCE 4';          // Name displayed in Modx-Dropdowns - No HTML!

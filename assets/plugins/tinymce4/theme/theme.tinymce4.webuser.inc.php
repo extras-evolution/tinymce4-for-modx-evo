@@ -16,7 +16,13 @@
  *
  * */
 
-// @todo: Set default-config for webusers
+$this->set('menubar', true, 'bool' );    // https://www.tinymce.com/docs/configure/editor-appearance/#menubar
+$this->set('statusbar', false, 'bool' ); // https://www.tinymce.com/docs/get-started/customize-ui/#hidingthestatusbar
+
+// @todo: Set default plugins for webusers
+// $this->set('plugins', '', 'string' );
+
+// Overwrite default plugins if given
 if( !empty( $this->pluginParams['pluginWebPlugins'])) {
     $this->set('plugins', $this->pluginParams['pluginWebPlugins'], 'string' );
 };

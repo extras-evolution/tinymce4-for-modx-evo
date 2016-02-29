@@ -16,7 +16,10 @@
  *
  * */
 
-$this->set('plugins', 'advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen spellchecker insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor codesample colorpicker textpattern imagetools paste modxlink youtube', 'string');
-$this->set('paste_word_valid_elements', 'a[href|name],p,b,strong,i,em,h1,h2,h3,h4,h5,h6,table,th,td[colspan|rowspan],tr,thead,tfoot,tbody,br,hr,sub,sup,u', 'string');
-$this->set('toolbar1', 'undo redo | cut copy paste | searchreplace | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | styleselect', 'string');
-$this->set('toolbar2', 'link unlink anchor image media codesample table | hr removeformat | subscript superscript charmap | nonbreaking | visualchars visualblocks print preview fullscreen code', 'string');
+$this->set('plugins', 'autolink save emoticons link paste image imagetools contextmenu', 'string');
+$this->set('toolbar1', 'undo redo | bold strikethrough | alignleft aligncenter alignright | link unlink image emoticons | hr | help', 'string');
+$this->set('toolbar2', NULL, 'string');
+
+// Hide bars
+$this->set('menubar',               false,                           'bool' );       // https://www.tinymce.com/docs/configure/editor-appearance/#menubar
+$this->set('statusbar',             false,                           'bool' );       // https://www.tinymce.com/docs/get-started/customize-ui/#hidingthestatusbar

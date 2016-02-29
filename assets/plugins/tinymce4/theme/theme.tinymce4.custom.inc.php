@@ -22,6 +22,8 @@ if( !empty( $this->modxParams['custom_plugins'])) {
     $this->set('plugins', $this->modxParams['custom_plugins'], 'string' );
 };
 
+$this->set('menubar', false, 'bool' ); // https://www.tinymce.com/docs/configure/editor-appearance/#menubar
+
 $this->set('toolbar1', $this->modxParams['custom_buttons1'], 'string', false );
 $this->set('toolbar2', $this->modxParams['custom_buttons2'], 'string', false );
 $this->set('toolbar3', $this->modxParams['custom_buttons3'], 'string', false );

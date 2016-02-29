@@ -16,7 +16,12 @@
  *
  * */
 
-$this->set('plugins', 'advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen spellchecker insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor codesample colorpicker textpattern imagetools paste modxlink youtube', 'string');
-$this->set('paste_word_valid_elements', 'a[href|name],p,b,strong,i,em,h1,h2,h3,h4,h5,h6,table,th,td[colspan|rowspan],tr,thead,tfoot,tbody,br,hr,sub,sup,u', 'string');
-$this->set('toolbar1', 'undo redo | cut copy paste | searchreplace | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | styleselect', 'string');
-$this->set('toolbar2', 'link unlink anchor image media codesample table | hr removeformat | subscript superscript charmap | nonbreaking | visualchars visualblocks print preview fullscreen code', 'string');
+// @todo: make "styleprops"-button work with "compat3x-plugin"?
+// http://archive.tinymce.com/forum/viewtopic.php?pid=115507#p115507
+
+// @todo: layer-Plugin: Buttons broken
+
+$this->set('plugins', 'anchor save autolink autosave advlist layer fullscreen hr paste link media contextmenu table youtube image imagetools code textcolor', 'string');
+$this->set('toolbar1', 'undo redo | bold forecolor backcolor strikethrough styleselect fontsizeselect code', 'string');
+$this->set('toolbar2', 'image media youtube link unlink anchor | bullist numlist | blockquote outdent indent | alignleft aligncenter alignright | hr | styleprops removeformat | pastetext', 'string');
+$this->set('toolbar3', 'insertlayer absolute moveforward movebackward | table | fullscreen help', 'string');

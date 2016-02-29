@@ -16,7 +16,12 @@
  *
  * */
 
-$this->set('plugins', 'advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen spellchecker insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor codesample colorpicker textpattern imagetools paste modxlink youtube', 'string');
-$this->set('paste_word_valid_elements', 'a[href|name],p,b,strong,i,em,h1,h2,h3,h4,h5,h6,table,th,td[colspan|rowspan],tr,thead,tfoot,tbody,br,hr,sub,sup,u', 'string');
-$this->set('toolbar1', 'undo redo | cut copy paste | searchreplace | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | styleselect', 'string');
-$this->set('toolbar2', 'link unlink anchor image media codesample table | hr removeformat | subscript superscript charmap | nonbreaking | visualchars visualblocks print preview fullscreen code', 'string');
+// @todo: make "styleprops"-button work with "compat3x-plugin"?
+// http://archive.tinymce.com/forum/viewtopic.php?pid=115507#p115507
+
+// @todo: Is this list complete for a "full"-theme?
+$this->set('plugins', 'anchor autolink lists spellchecker pagebreak layer table save hr link image imagetools emoticons insertdatetime preview media searchreplace print code contextmenu paste directionality fullscreen noneditable visualchars textcolor nonbreaking template youtube autosave advlist visualblocks charmap', 'string');
+$this->set('toolbar1', 'save newdocument | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect fontselect fontsizeselect', 'string');
+$this->set('toolbar2', 'cut copy paste pastetext | search replace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image help code | insertdate inserttime preview | forecolor backcolor', 'string');
+$this->set('toolbar3', 'table | hr removeformat visualblocks | subscript superscript | charmap emoticons youtube media hr | print | ltr rtl | fullscreen', 'string');
+$this->set('toolbar4', 'insertlayer moveforward movebackward absolute | styleprops spellchecker | cite abbr acronym del ins attribs | visualchars nonbreaking template blockquote pagebreak | insertfile insertimage', 'string');
