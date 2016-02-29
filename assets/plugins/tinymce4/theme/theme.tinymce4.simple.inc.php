@@ -16,7 +16,7 @@
  *
  * */
 
-$this->set('plugins', 'autolink save emoticons link paste image imagetools contextmenu', 'string');
+$this->set('plugins', 'autolink save emoticons modxlink paste image imagetools contextmenu', 'string');
 $this->set('toolbar1', 'undo redo | bold strikethrough | alignleft aligncenter alignright | link unlink image emoticons | hr | help', 'string');
 $this->set('toolbar2', NULL, 'string');
 

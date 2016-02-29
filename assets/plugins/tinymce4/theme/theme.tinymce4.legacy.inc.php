@@ -19,6 +19,6 @@
 // @todo: make "styleprops"-button work with "compat3x-plugin"?
 // http://archive.tinymce.com/forum/viewtopic.php?pid=115507#p115507
 
-$this->set('plugins', 'anchor save autosave advlist link image imagetools searchreplace print contextmenu paste fullscreen nonbreaking visualchars media youtube code', 'string');
+$this->set('plugins', 'anchor save autosave advlist modxlink image imagetools searchreplace print contextmenu paste fullscreen nonbreaking visualchars media youtube code', 'string');
 $this->set('toolbar1', 'undo redo selectall | pastetext | search replace | nonbreaking hr charmap | image link unlink anchor media youtube | removeformat | fullscreen print code help', 'string');
 $this->set('toolbar2', 'bold italic underline strikethrough subscript superscript | blockquote | bullist numlist outdent indent | alignleft aligncenter alignright alignjustify | styleselect | styleprops', 'string');
