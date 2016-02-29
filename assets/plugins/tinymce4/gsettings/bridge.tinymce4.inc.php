@@ -6,9 +6,7 @@
 // @todo: prepare all needed themes
 // @todo: add https://www.tinymce.com/docs/configure/content-filtering/#invalid_styles
 // @todo: add https://www.tinymce.com/docs/configure/content-filtering/#remove_trailing_brs
-// @todo: add plugin-config "Disabled Buttons" to bridge, remove every string from setting 'toolbar1', 'toolbar2' etc
 // @todo: Link-Plugin -> add option "choose directly from Modx-Ressource-Tree" like in CKEditor 4?
-// @todo: modify save-plugin: Enable save-button and STRG-S
 
 // Editor-Settings
 $editorLabel    = 'TinyMCE 4';          // Name displayed in Modx-Dropdowns - No HTML!
@@ -108,6 +106,18 @@ $bridgeParams = array(
             $this->appendInitOnce('<style>.mce-toolbar .mce-last { float: right; }</style>');   // Force editor by CSS ?
         };
     },
+
+    // disabled_buttons-param is deprecated - bridge replaces old TinyMCE v3-param
+    'disabledButtons' => function () {
+        if( !empty( $this->pluginParams['pluginDisabledButtons'])) {
+            $buttons = explode(' ', $this->pluginParams['pluginDisabledButtons']);
+            if(isset($this->pluginParams['toolbar1'])) $this->pluginParams['toolbar1'] = str_replace( $buttons, '', $this->pluginParams['toolbar1'] );
+            if(isset($this->pluginParams['toolbar2'])) $this->pluginParams['toolbar2'] = str_replace( $buttons, '', $this->pluginParams['toolbar2'] );
+            if(isset($this->pluginParams['toolbar3'])) $this->pluginParams['toolbar3'] = str_replace( $buttons, '', $this->pluginParams['toolbar3'] );
+            if(isset($this->pluginParams['toolbar4'])) $this->pluginParams['toolbar4'] = str_replace( $buttons, '', $this->pluginParams['toolbar4'] );
+        };
+    },
+
 
     // Handles customSetting "blockFormats" -
     // https://www.tinymce.com/docs/configure/content-formatting/#block_formats
