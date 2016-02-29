@@ -51,6 +51,9 @@ if( !empty( $modx->config['editor_css_path'] )) {
     $this->set('content_css', explode(',',$modx->config['editor_css_path']), 'array'); // https://www.tinymce.com/docs/configure/content-appearance/#content_css
 };
 
+// Load templates and chunks by connector
+$this->set('templates', $this->pluginParams['base_url'].'connector.tinymce4.templates.php', 'string' ); // https://www.tinymce.com/docs/plugins/template/#templates
+
 $this->set('image_caption',         true,                           'bool' );       // https://www.tinymce.com/docs/plugins/image/#image_caption
 $this->set('image_advtab',          'small',                        'string' );     // https://www.tinymce.com/docs/plugins/image/#image_advtab
 $this->set('image_advtab',          true,                           'bool' );       // https://www.tinymce.com/docs/plugins/image/#image_advtab // replacement for 3.x-plugin advimage
@@ -59,8 +62,8 @@ $this->set('image_advtab',          true,                           'bool' );   
 $this->set('paste_word_valid_elements', 'a[href|name],p,b,strong,i,em,h1,h2,h3,h4,h5,h6,table,th,td[colspan|rowspan],tr,thead,tfoot,tbody,br,hr,sub,sup,u', 'string');
 
 // @todo: final base-setup like tinymce3 "default"-theme?
-$this->set('plugins', 'anchor visualblocks template autolink autosave save advlist fullscreen paste modxlink media contextmenu table youtube image imagetools code textcolor', 'string');    // https://www.tinymce.com/docs/get-started/basic-setup/#pluginconfiguration
-$this->set('toolbar1', 'undo redo | bold forecolor backcolor strikethrough fontsizeselect pastetext code template | fullscreen help', 'string');
+$this->set('plugins', 'anchor visualblocks autolink autosave save advlist fullscreen paste modxlink media contextmenu table youtube image imagetools code textcolor', 'string');    // https://www.tinymce.com/docs/get-started/basic-setup/#pluginconfiguration
+$this->set('toolbar1', 'undo redo | bold forecolor backcolor strikethrough fontsizeselect pastetext code | fullscreen help', 'string');
 $this->set('toolbar2', 'image media youtube link unlink anchor | alignleft aligncenter alignright | bullist numlist | blockquote outdent indent | table hr | visualblocks styleprops removeformat', 'string');
 
 // Bridge does not return NULL, and does not use this->set() itself, so these parameters must be set at least once..

@@ -16,11 +16,10 @@
  *
  * */
 
-// @todo: Prepare plugin "insert template/chunk"
-// @todo: Assure plugin is loaded in list - using $this->appendSet($key, $value, $separator = ',')
 if( !empty( $this->modxParams['custom_plugins'])) {
     $this->set('plugins', $this->modxParams['custom_plugins'], 'string' );
 };
+$this->appendSet('plugins', 'template', ' '); // Assure plugin is loaded / in plugins-list
 
 $this->set('menubar', false, 'bool' ); // https://www.tinymce.com/docs/configure/editor-appearance/#menubar
 
