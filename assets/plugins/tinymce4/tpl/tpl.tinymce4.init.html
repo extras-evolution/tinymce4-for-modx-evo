@@ -19,6 +19,7 @@
             });
             return false;
         },
-        setup : function(ed) { ed.on('change', function(e) { documentDirty=true; }); }
+        setup : function(ed) { ed.on('change', function(e) { documentDirty=true; }); },
+        save_onsavecallback: function () { documentDirty=false; document.getElementById('stay').value = 2; document.mutate.save.click(); }
     });
 </script>
