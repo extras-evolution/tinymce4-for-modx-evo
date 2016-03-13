@@ -12,7 +12,7 @@
  * $emptyAllowed    = true, false (allows param:'' instead of falling back to default)
  * If $editorParam is empty and $emptyAllowed is true, $defaultValue will be ignored
  *
- * $modxParams holds an array of actual Modx- / user-settings
+ * $this->modxParams holds an array of actual Modx- / user-settings
  *
  * */
 
@@ -30,7 +30,8 @@
 // @todo: selectall-Button broken
 
 $this->set('skin',                  'lightgray',                    'string' );     // Set default skin (setting param first time sets its value also as default val)
-$this->set('skin',                  $modxParams['skin'] );                          // Overwrite with Modx-setting (if empty, default is used))
+$this->set('skin',                  $this->modxParams['skin'] );                    // Overwrite with Modx-setting (if empty, default is used))
+
 $this->set('width',                 $this->pluginParams['width'],   'string' );     // https://www.tinymce.com/docs/configure/editor-appearance/#width
 $this->set('height',                $this->pluginParams['height'],  'string' );     // https://www.tinymce.com/docs/configure/editor-appearance/#height
 
@@ -39,12 +40,13 @@ $this->set('menubar',               true,                           'bool' );   
 $this->set('statusbar',             true,                           'bool' );       // https://www.tinymce.com/docs/get-started/customize-ui/#hidingthestatusbar
 
 $this->set('document_base_url',     MODX_SITE_URL,                  'string' );     // https://www.tinymce.com/docs/configure/url-handling/#document_base_url
-$this->set('entity_encoding', $this->pluginParams['pluginEntityEncoding'],'string');// https://www.tinymce.com/docs/configure/content-filtering/#encodingtypes
-$this->set('entities',        $this->pluginParams['pluginEntities'],      'string');// https://www.tinymce.com/docs/configure/content-filtering/#entities
+$this->set('entity_encoding', $this->pluginParams['entityEncoding'],'string');      // https://www.tinymce.com/docs/configure/content-filtering/#encodingtypes
+$this->set('entities',        $this->pluginParams['entities'],      'string');      // https://www.tinymce.com/docs/configure/content-filtering/#entities
 $this->set('language',              $this->lang('lang_code'),       'string');      // https://www.tinymce.com/docs/configure/localization/#language
 $this->set('language_url',          $this->pluginParams['base_url'].'tinymce/langs/'. $this->lang('lang_code') .'.js', 'string');   // https://www.tinymce.com/docs/configure/localization/#language_url
-$this->set('schema',                $modxParams['schema'],          'string' );     // https://www.tinymce.com/docs/configure/content-filtering/#schema
-$this->set('element_format',        $modxParams['element_format'],  'string' );     // https://www.tinymce.com/docs/configure/content-filtering/#element_format
+$this->set('schema',                $this->modxParams['schema'],          'string' );     // https://www.tinymce.com/docs/configure/content-filtering/#schema
+$this->set('element_format',        $this->modxParams['element_format'],  'string' );     // https://www.tinymce.com/docs/configure/content-filtering/#element_format
+// $this->set('inline',                true,  'bool' );                             // https://www.tinymce.com/docs/configure/integration-and-setup/#inlineeditingmodeonadivelementwithideditable
 
 // Avoid set empty content_css - accepts comma-separated list of multiple css-files
 if( !empty( $modx->config['editor_css_path'] )) {
@@ -71,3 +73,6 @@ $this->set('toolbar2', 'image media youtube link unlink anchor | alignleft align
 $this->set('style_formats', array(), 'json');   // https://www.tinymce.com/docs/configure/content-formatting/#style_formats
 $this->set('block_formats', '',      'string'); // https://www.tinymce.com/docs/configure/content-formatting/#block_formats
 $this->set('forced_root_block', '',  'string'); // https://www.tinymce.com/docs/configure/content-filtering/#forced_root_block
+
+$this->set('setup', 'function(ed) { ed.on("change", function(e) { documentDirty=true; }); }',  'object');
+$this->set('save_onsavecallback', 'function () { documentDirty=false; document.getElementById("stay").value = 2; document.mutate.save.click(); }',  'object');

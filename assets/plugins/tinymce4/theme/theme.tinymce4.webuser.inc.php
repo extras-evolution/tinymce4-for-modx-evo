@@ -12,7 +12,7 @@
  * $emptyAllowed    = true, false (allows param:'' instead of falling back to default)
  * If $editorParam is empty and $emptyAllowed is true, $defaultValue will be ignored
  *
- * $modxParams holds an array of actual Modx- / user-settings
+ * $this->modxParams holds an array of actual Modx- / user-settings
  *
  * */
 
@@ -23,11 +23,11 @@ $this->set('statusbar', false, 'bool' ); // https://www.tinymce.com/docs/get-sta
 // $this->set('plugins', '', 'string' );
 
 // Overwrite default plugins if given
-if( !empty( $this->pluginParams['pluginWebPlugins'])) {
-    $this->set('plugins', $this->pluginParams['pluginWebPlugins'], 'string' );
+if( !empty( $this->pluginParams['webPlugins'])) {
+    $this->set('plugins', $this->pluginParams['webPlugins'], 'string' );
 };
 
-$this->set('toolbar1', $this->pluginParams['pluginWebButtons1'], 'string', false );
-$this->set('toolbar2', $this->pluginParams['pluginWebButtons2'], 'string', false );
-$this->set('toolbar3', $this->pluginParams['pluginWebButtons3'], 'string', false );
-$this->set('toolbar4', $this->pluginParams['pluginWebButtons4'], 'string', false );
+$this->set('toolbar1', $this->pluginParams['webButtons1'], 'string', false );
+$this->set('toolbar2', $this->pluginParams['webButtons2'], 'string', false );
+$this->set('toolbar3', $this->pluginParams['webButtons3'], 'string', false );
+$this->set('toolbar4', $this->pluginParams['webButtons4'], 'string', false );

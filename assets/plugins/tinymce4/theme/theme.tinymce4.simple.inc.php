@@ -12,7 +12,7 @@
  * $emptyAllowed    = true, false (allows param:'' instead of falling back to default)
  * If $editorParam is empty and $emptyAllowed is true, $defaultValue will be ignored
  *
- * $modxParams holds an array of actual Modx- / user-settings
+ * $this->modxParams holds an array of actual Modx- / user-settings
  *
  * */
 
