@@ -3,7 +3,7 @@
    Base: v4.3.4
 */
 
-// @todo: prepare all needed themes
+// @todo: check all needed themes
 // @todo: add https://www.tinymce.com/docs/configure/content-filtering/#invalid_styles
 // @todo: add https://www.tinymce.com/docs/configure/content-filtering/#remove_trailing_brs
 // @todo: youtube-plugin is commercial? -> http://www.cfcms.nl/tinymce-youtube/index.html
@@ -11,19 +11,20 @@
 // Editor-Settings
 $editorLabel    = 'TinyMCE 4';          // Name displayed in Modx-Dropdowns - No HTML!
 $skinsDirectory = 'tinymce/skins';      // Relative to plugin-dir
-$editorVersion  = '4.3.4';              // Version of CKEditor-Library
+$editorVersion  = '4.3.7';              // Version of TinyMCE4-Library
 $editorLogo     = 'tinymce/logo.png';   // Optional Image displayed in Modx-settings
 
-// Dynamic translation of Modx-settings to editor-settings
 
+// Dynamic translation of Modx-settings to editor-settings
 $bridgeParams = array(
 
     // https://www.tinymce.com/docs/demo/url-conversion/
     'url_setup' => function () {
+        global $modx;
 
         // $pathSetup = array( relative_urls, remove_script_host, convert_urls )
 
-        switch ($this->pluginParams['pluginPathOptions']) {
+        switch ($this->pluginParams['pathOptions']) {
             case 'Site config':
             case 'siteconfig':
                 if ($modx->config['strip_image_paths'] == 1) {
@@ -66,8 +67,8 @@ $bridgeParams = array(
         $sfArray[] = array('title'=>'Pre','format'=>'pre');
 
         // Set in plugin-configuration, format: Title,cssClass|Title2,cssClass
-        if(isset($this->pluginParams['pluginStyleFormats'])) {
-            $styles_formats = explode('|', $this->pluginParams['pluginStyleFormats']);
+        if(isset($this->pluginParams['styleFormats'])) {
+            $styles_formats = explode('|', $this->pluginParams['styleFormats']);
             foreach ($styles_formats as $val) {
                 $style = explode(',', $val);
                 $sfArray[] = array('title'=>$style['0'], 'selector'=>'a,strong,em,p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,tr,span,img', 'classes'=>$style['1']);
@@ -78,7 +79,7 @@ $bridgeParams = array(
 
     // https://www.tinymce.com/docs/configure/editor-appearance/#resize
     'advanced_resizing' => function () {
-        switch($this->pluginParams['pluginResizing']) {
+        switch($this->pluginParams['resizing']) {
             case 'true':
                 $this->set('resize', 'both', 'string');
                 break;
@@ -101,7 +102,7 @@ $bridgeParams = array(
 
     // @todo: Remove? RTL will be set by language-pack -> http://www.tinymce.com/forum/viewtopic.php?id=32748
     'contentsLangDirection' => function () {
-        if( $this->pluginParams['pluginWebAlign'] == 'rtl') {
+        if( $this->pluginParams['webAlign'] == 'rtl') {
             $this->set('directionality', 'rtl', 'string');
             $this->appendInitOnce('<style>.mce-toolbar .mce-last { float: right; }</style>');   // Force editor by CSS ?
         };
@@ -109,13 +110,102 @@ $bridgeParams = array(
 
     // disabled_buttons-param is deprecated - bridge replaces old TinyMCE v3-param
     'disabledButtons' => function () {
-        if( !empty( $this->pluginParams['pluginDisabledButtons'])) {
-            $buttons = explode(' ', $this->pluginParams['pluginDisabledButtons']);
+        if( !empty( $this->pluginParams['disabledButtons'])) {
+            $buttons = explode(' ', $this->pluginParams['disabledButtons']);
             if(isset($this->pluginParams['toolbar1'])) $this->pluginParams['toolbar1'] = str_replace( $buttons, '', $this->pluginParams['toolbar1'] );
             if(isset($this->pluginParams['toolbar2'])) $this->pluginParams['toolbar2'] = str_replace( $buttons, '', $this->pluginParams['toolbar2'] );
             if(isset($this->pluginParams['toolbar3'])) $this->pluginParams['toolbar3'] = str_replace( $buttons, '', $this->pluginParams['toolbar3'] );
             if(isset($this->pluginParams['toolbar4'])) $this->pluginParams['toolbar4'] = str_replace( $buttons, '', $this->pluginParams['toolbar4'] );
         };
+    },
+
+    // Sets selectorPrefix for Manager or Frontendediting
+    'selectorPrefix' => function () {
+        global $modx;
+
+        $inlineMode = $this->determineValue('inline') == true && $this->pluginParams['inlineMode'] == 'enabled' ? true : false;
+
+        // Manager Mode
+        if(!$inlineMode) {
+            $this->setPlaceholder('selectorPrefix', '#');   // Selectors = #ta, #tv9
+
+        // Prepare Inline-Magic
+        } else {
+            $this->setPlaceholder('selectorPrefix', '.');   // Single selector = .editable
+
+            $this->force('setup',          NULL);               // Remove from parameters for Frontend
+            $this->force('save_onsavecallback', 'function () {
+            triggerSave();
+        }', 'object');
+
+            // Prepare save-button
+            $this->appendInitOnce('
+            <style>
+              #action-save { position:fixed;top:0px;left:0px; color: #000000; background-color: #F0F0F0; text-shadow: -1px 1px #aaaaaa; display: inline-block; padding: 15px 30px !important; font-size: 24px; font-family: sans-serif; line-height: 1.8; appearance: none; box-shadow: none; border-radius: 0; border: none; cursor:pointer; }
+              #action-save:hover { color: #222222; outline: none; background-color: #E3E3E3; }
+            </style>
+            <button id="action-save" class="button" title="Save Ressource">SAVE</button>
+            <script>
+            // Remove every attribute starting with data-mce-
+            function tinymce_clean_html_before_save( _container ) {
+             $(_container).find("*").each(function(){
+              var elem = $(this);
+              var attributes = $(this).get(0).attributes;
+              $(attributes).each(function(index){
+               var attribute = attributes[index].name;
+               if( attribute.substring(0, 9) == "data-mce-" ){
+                elem.removeAttr(attribute);
+               }
+              });
+             });
+             return _container;
+            }
+
+            $("#action-save").on("click", function() { triggerSave(); });
+            function triggerSave() {
+
+            [+dataObject+]
+
+            var saving = $.post( "' . $this->pluginParams['base_url'] . 'connector.tinymce4.saveProcessor.php", data );
+
+            saving.done(function( data ) {
+                if( data == ' . $modx->documentIdentifier . ' ) {
+                    $("#action-save").css("color","#00ff00");
+                    setTimeout(function(){ $("#action-save").css("color","#000000") }, 3000);
+                    // Force all instances to not dirty state
+                    for (var key in window.tinymce.editors) {
+                        tinymce.get(key).setDirty(false);
+                    }
+                } else {
+                    $("#action-save").css("color","#ff0000");
+                    alert( data );  // Show (PHP-)Errors for debug
+                }
+            });
+    }
+</script>
+');
+            // Prepare dataObject for submitting changes
+            $editableIds = explode(',', $this->pluginParams['editableIds']);
+            if(!empty($editableIds)) {
+                $dataEls = array();
+                foreach ($editableIds as $idStr) {
+                    $editable = explode('->', $idStr);
+                    $modxPh = trim($editable[0]);
+                    $cssId = trim($editable[1]);
+
+                    $dataEls[] = "'{$modxPh}': tinymce_clean_html_before_save( $('{$cssId}').html() )";
+                }
+                $dataEls = join(",\n                ", $dataEls);
+
+                $this->setPlaceholder('dataObject', "
+                var data = {
+                    'pluginName':'{$this->pluginParams['pluginName']}',
+                    'rid':{$modx->documentIdentifier},
+                    {$dataEls}
+                };");
+            }
+        }
+        return NULL;
     },
 
 
@@ -133,7 +223,7 @@ $bridgeParams = array(
 );
 
 // Custom settings to show below Modx- / user-configuration
-$customSettings = array(
+$gSettingsCustom = array(
 
     'css_selectors' => NULL,         // Hides "CSS Selectors" from settings
 
@@ -147,7 +237,7 @@ $customSettings = array(
 );
 
 // For Modx- and user-configuration
-$defaultValues = array(
+$gSettingsDefaultValues = array(
     'entermode' => 'p',
     'element_format' => 'xhtml',
     'schema' => 'html5',
