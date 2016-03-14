@@ -30,4 +30,4 @@ $this->set('statusbar',             false,                           'bool' );  
 
 // Will be overwritten by force() within plugin-code anyhow
 $this->set('height',            '200px',    'string' );
-$this->set('width',             '200px',    'string' );
+$this->set('width',             '100%',    'string' );
