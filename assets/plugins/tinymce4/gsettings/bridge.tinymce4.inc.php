@@ -152,9 +152,11 @@ $bridgeParams = array(
               var elem = $(this);
               var attributes = $(this).get(0).attributes;
               $(attributes).each(function(index){
-               var attribute = attributes[index].name;
-               if( attribute.substring(0, 9) == "data-mce-" ){
-                elem.removeAttr(attribute);
+               if(typeof attributes[index] != "undefined") {
+                var attribute = attributes[index].name;
+                if( attribute.substring(0, 9) == "data-mce-" ){
+                 elem.removeAttr(attribute);
+                }
                }
               });
              });
