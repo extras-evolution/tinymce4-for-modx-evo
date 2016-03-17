@@ -17,9 +17,9 @@ $editorLogo     = 'tinymce/logo.png';   // Optional Image displayed in Modx-sett
 
 // Dynamic translation of Modx-settings to editor-settings
 $bridgeParams = array(
-
+    
     // https://www.tinymce.com/docs/demo/url-conversion/
-    'url_setup' => function () {
+    'url_setup' => function ($selector) {
         global $modx;
 
         // $pathSetup = array( relative_urls, remove_script_host, convert_urls )
@@ -55,7 +55,7 @@ $bridgeParams = array(
     },
 
     // https://www.tinymce.com/docs/configure/content-formatting/#style_formats
-    'style_formats' => function () {
+    'style_formats' => function ($selector) {
         $sfArray[] = array('title'=>'Paragraph','format'=>'p');
         $sfArray[] = array('title'=>'Header 1','format'=>'h1');
         $sfArray[] = array('title'=>'Header 2','format'=>'h2');
@@ -78,7 +78,7 @@ $bridgeParams = array(
     },
 
     // https://www.tinymce.com/docs/configure/editor-appearance/#resize
-    'advanced_resizing' => function () {
+    'advanced_resizing' => function ($selector) {
         switch($this->pluginParams['resizing']) {
             case 'true':
                 $this->set('resize', 'both', 'string');
@@ -89,7 +89,7 @@ $bridgeParams = array(
     },
 
     // https://www.tinymce.com/docs/configure/content-filtering/#forced_root_block
-    'forced_root_block' => function () {
+    'forced_root_block' => function ($selector) {
         switch($this->modxParams['entermode']) {
             case 'br':
                 $this->set('forced_root_block', false, 'bool');
@@ -101,7 +101,7 @@ $bridgeParams = array(
     },
 
     // @todo: Remove? RTL will be set by language-pack -> http://www.tinymce.com/forum/viewtopic.php?id=32748
-    'contentsLangDirection' => function () {
+    'contentsLangDirection' => function ($selector) {
         if( $this->pluginParams['webAlign'] == 'rtl') {
             $this->set('directionality', 'rtl', 'string');
             $this->appendInitOnce('<style>.mce-toolbar .mce-last { float: right; }</style>');   // Force editor by CSS ?
@@ -109,7 +109,7 @@ $bridgeParams = array(
     },
 
     // disabled_buttons-param is deprecated - bridge replaces old TinyMCE v3-param
-    'disabledButtons' => function () {
+    'disabledButtons' => function ($selector) {
         if( !empty( $this->pluginParams['disabledButtons'])) {
             $buttons = explode(' ', $this->pluginParams['disabledButtons']);
             if(isset($this->pluginParams['toolbar1'])) $this->pluginParams['toolbar1'] = str_replace( $buttons, '', $this->pluginParams['toolbar1'] );
@@ -119,8 +119,8 @@ $bridgeParams = array(
         };
     },
 
-    // Sets selectorPrefix for Manager or Frontendediting
-    'selectorPrefix' => function () {
+    // Sets selectorPrefix and handles InlineMode for Manager or Frontendediting
+    'selectorPrefix' => function ($selector) {
         global $modx;
 
         $inlineMode = $this->determineValue('inline') == true && $this->pluginParams['inlineMode'] == 'enabled' ? true : false;
@@ -209,19 +209,52 @@ $bridgeParams = array(
         }
         return NULL;
     },
-
+    
+    // https://www.tinymce.com/docs/configure/integration-and-setup/#selector
+    // Requires comma-separated IDs as selector instead of  
+    'selector' => function ($selector) {
+        global $modx;
+        
+        if($selector === 'initBridge' && !defined('INITBRIDGE_TINYMCE4')) {   // called only once right before looping through $this->pluginParams['elements']
+            define('INITBRIDGE_TINYMCE4',1); // don´t call it at every getEditorScript() / TV-init! 
+            $prefix = $this->getPlaceholder('selectorPrefix');
+            $elements = $this->pluginParams['elements'];
+            
+            // Sort elements by themes
+            $sortElArr = array();
+            foreach($elements as $sel) {
+                if(isset($this->tvOptions[$sel]['theme']) && !empty($this->tvOptions[$sel]['theme'])) {
+                    $theme = $this->tvOptions[$sel]['theme'];
+                } else {
+                    $theme = 0;
+                };
+                $sortElArr[$theme][] = $sel;
+            }
+            $sortOptArr = array();
+            foreach($sortElArr as $theme=>$elArr) {
+                $sortElArr[$theme] = '';
+                // return selectors comma-separated per theme as single element for TinyMCE4 & translate options to new selectors
+                $key = '';
+                foreach($elArr as $el) {
+                    $key .= (!empty($key)?',':'') . $prefix.$el;
+                }
+                $sortElArr[$theme] = $key;
+                $sortOptArr[$key]  = $this->tvOptions[$el];
+            }
+            $this->pluginParams['elements'] = $sortElArr;
+            $this->tvOptions = $sortOptArr;
+        }
+        return NULL;
+    },
 
     // Handles customSetting "blockFormats" -
     // https://www.tinymce.com/docs/configure/content-formatting/#block_formats
-    'block_formats' => function () {
+    'block_formats' => function ($selector) {
         // Format: Paragraph=p;Header 1=h1;Header 2=h2;Header 3=h3
         // params-string could be bridged/modified here from Modx-config to Editor-config
         // Right now its enough to return the string
         return $this->modxParams['blockFormats'];
     }
-
-
-
 );
 
 // Custom settings to show below Modx- / user-configuration
