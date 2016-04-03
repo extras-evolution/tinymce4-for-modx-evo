@@ -34,6 +34,11 @@ switch ($e->name) {
     // render script for JS-initialization
     case "OnRichTextEditorInit":
         if ($editor === $editorLabel) {
+            // Handle introtext-RTE
+            if($introtextRte == 'enabled') {
+                $rte->pluginParams['elements'][] = 'introtext';
+                $rte->tvOptions['introtext']['theme'] = 'introtext';
+            }
             $script = $rte->getEditorScript();
             $e->output($script);
         };
