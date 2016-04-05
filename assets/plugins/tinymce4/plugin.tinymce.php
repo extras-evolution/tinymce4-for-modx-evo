@@ -15,7 +15,7 @@
  *
  * @author Yama / updated: 2015-01-16
  * @author Dmi3yy / updated: 2016-01-07
- * @author Deesen / updated: 2016-04-03
+ * @author Deesen / updated: 2016-04-04
  *
  * Latest Updates / Issues on Github : https://github.com/extras-evolution/tinymce4-for-modx-evo
  */
