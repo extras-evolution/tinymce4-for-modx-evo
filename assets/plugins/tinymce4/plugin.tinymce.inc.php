@@ -5,12 +5,13 @@ if (!defined('MODX_BASE_PATH')) { die('What are you doing? Get out of here!'); }
 
 // Init
 if( !file_exists(MODX_BASE_PATH."assets/lib/class.modxRTEbridge.php")) { // Add Fall-Back for now
-    include_once(MODX_BASE_PATH."assets/plugins/tinymce4/class.modxRTEbridge.php"); 
+    require_once(MODX_BASE_PATH."assets/plugins/tinymce4/class.modxRTEbridge.php"); 
 } else {
-    include_once(MODX_BASE_PATH."assets/lib/class.modxRTEbridge.php");
+    require_once(MODX_BASE_PATH."assets/lib/class.modxRTEbridge.php");
 }
+require_once(MODX_BASE_PATH."assets/plugins/tinymce4/bridge.tinymce4.inc.php");
 
-$rte = new modxRTEbridge('tinymce4', __FILE__, $options);
+$rte = new tinymce4bridge($options);
 $rte->setDebug(false);  // true or 'full' for Debug-Infos in HTML-comments
 
 // Overwrite theme
