@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * TinyMCE4
  *
  * Javascript rich text editor

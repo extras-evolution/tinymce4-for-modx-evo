@@ -10,7 +10,7 @@
 
 class tinymce4bridge extends modxRTEbridge
 {
-    public function __construct($tvOptions)
+    public function __construct($tvOptions=array())
     {
         $bridgeConfig = array(
             // Editor-Settings
@@ -268,7 +268,7 @@ class tinymce4bridge extends modxRTEbridge
                 if (isset($this->tvOptions[$sel]['theme']) && !empty($this->tvOptions[$sel]['theme'])) {
                     $theme = $this->tvOptions[$sel]['theme'];
                 } else {
-                    $theme = 0;
+                    $theme = $this->modxParams['theme'];
                 };
                 $sortElArr[$theme][] = $sel;
             }
