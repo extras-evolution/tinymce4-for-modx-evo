@@ -229,22 +229,21 @@ class tinymce4bridge extends modxRTEbridge
         </script>
     ');
             // Prepare dataObject for submitting changes
-            $editableIds = explode(',', $this->pluginParams['editableIds']);
-            if (!empty($editableIds)) {
+            if (isset($modx->modxRTEbridge['editableIds'])) {
                 $dataEls = array();
-                foreach ($editableIds as $idStr) {
-                    $editable = explode('->', $idStr);
-                    $modxPh = trim($editable[0]);
-                    $cssId = trim($editable[1]);
-
-                    $dataEls[] = "'{$modxPh}': tinymce_clean_html_before_save( $('{$cssId}').html() )";
+                $phs = '';
+                foreach ($modx->modxRTEbridge['editableIds'] as $cssId=>$x) {
+                    $dataEls[] = "'{$cssId}': tinymce_clean_html_before_save( $('#modx_{$cssId}').html() )";
+                    $phs .= (!empty($phs) ? ',' : '') . $cssId;
                 }
-                $dataEls = join(",\n                ", $dataEls);
+                $dataEls = join(",\n                    ", $dataEls);
 
                 $this->setPlaceholder('dataObject', "
                 var data = {
                     'pluginName':'{$this->pluginParams['pluginName']}',
                     'rid':{$modx->documentIdentifier},
+                    'secHash':'{$this->prepareAjaxSecHash($modx->documentIdentifier)}',
+                    'phs':'{$phs}',
                     {$dataEls}
                 };");
             }
