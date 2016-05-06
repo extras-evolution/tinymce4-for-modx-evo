@@ -3,5 +3,5 @@
 <script src="[+pp.base_url+]tinymce/tinymce.min.js"></script>
 <script>
     // For displaying modals inside external lightboxes
-    $(document).on('focusin.bs.modal', function(e) { if ($(e.target).closest(".mce-window").length && $('#colorbox').is(":visible")) { e.stopImmediatePropagation(); }})
+    jQuery(document).on('focusin.bs.modal', function(e) { if ($(e.target).closest(".mce-window").length && $('#colorbox').is(":visible")) { e.stopImmediatePropagation(); }})
 </script>
