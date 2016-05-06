@@ -16,10 +16,15 @@
  *
  * */
 
-$this->set('plugins', 'autolink save emoticons modxlink paste image imagetools contextmenu', 'string');
-$this->set('toolbar1', 'undo redo | bold strikethrough | alignleft aligncenter alignright | link unlink image emoticons | hr | help', 'string');
+$this->set('plugins', 'autolink save emoticons modxlink paste image imagetools contextmenu template', 'string');
+
+$this->set('toolbar1', 'undo redo | bold strikethrough | alignleft aligncenter alignright | link unlink image emoticons template | help', 'string');
 $this->set('toolbar2', NULL, 'string');
 
 // Hide bars
 $this->set('menubar',               false,                           'bool' );       // https://www.tinymce.com/docs/configure/editor-appearance/#menubar
 $this->set('statusbar',             false,                           'bool' );       // https://www.tinymce.com/docs/get-started/customize-ui/#hidingthestatusbar
+
+// When using template-plugin/button, you can mark elements as noneditable via <div class="myclass mceNonEditable">Contents</div>
+// https://www.tinymce.com/docs/plugins/noneditable/
+$this->appendSet('plugins', 'noneditable', ' ');
