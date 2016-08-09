@@ -202,7 +202,7 @@ class modxRTEbridge
     // Renders complete JS-Script
     public function getEditorScript()
     {
-        global $modx;
+        global $modx, $which_browser;
         $ph = array();
         $output = "<!-- modxRTEbridge {$this->editorKey} -->\n";
 
@@ -227,6 +227,8 @@ class modxRTEbridge
                 $ph['themeKey'] = $this->theme;
                 $ph['selector'] = $selector;
                 $ph['documentIdentifier'] = $modx->documentIdentifier;
+                $ph['manager_path'] = MGR_DIR;
+                $ph['which_browser'] = !empty($which_browser) ? $which_browser : 'mcpuk';
 
                 $ph = array_merge($ph, $this->customPlaceholders, $this->mergeParamArrays());   // Big list..
 
