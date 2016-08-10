@@ -36,9 +36,12 @@ switch ($e->name) {
     case "OnRichTextEditorInit":
         if ($editor === $editorLabel) {
             // Handle introtext-RTE
-            if($introtextRte == 'enabled') {
-                $rte->pluginParams['elements'][] = 'introtext';
-                $rte->tvOptions['introtext']['theme'] = 'introtext';
+            if($introtextRte == 'enabled' && isset($rte->pluginParams['elements']) && !defined($editor . '_INIT_INTROTEXT')) {
+				define($editor . '_INIT_INTROTEXT', 1);
+                if(!in_array('introtext',$rte->pluginParams['elements'])) {
+					$rte->pluginParams['elements'][]      = 'introtext';
+					$rte->tvOptions['introtext']['theme'] = 'introtext';
+				};
             }
             $script = $rte->getEditorScript();
             $e->output($script);
