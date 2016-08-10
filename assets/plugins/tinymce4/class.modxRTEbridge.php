@@ -258,7 +258,21 @@ class modxRTEbridge
             }
 
         } else {
-           exit; // @todo: prepare for editors that need no elements
+			// No elements given - create Config-Object only 
+			$this->theme = $this->tvOptions['theme'];
+			$this->initTheme('noselector');
+			$this->renderBridgeParams('noselector');
+
+			$ph['configString'] = $this->renderConfigString();
+			$ph['configRawString'] = $this->renderConfigRawString();
+			$ph['editorKey'] = $this->editorKey;
+			$ph['themeKey'] = $this->theme;
+			
+			if (!defined($this->editorKey . '_INIT_CONFIG_' . $this->theme)) {
+				define($this->editorKey . '_INIT_CONFIG_' . $this->theme, 1);
+				$output .= file_get_contents("{$this->pluginParams['base_path']}tpl/tpl.{$this->editorKey}.config.html") ."\n";
+				$output  = $modx->parseText($output, $ph);
+			}
         }
 
         // Remove empty placeholders !
