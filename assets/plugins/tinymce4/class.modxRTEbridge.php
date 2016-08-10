@@ -1,7 +1,8 @@
 <?php
 /**
- * @author Deesen, yama / updated: 04.04.2016
+ * @author Deesen, yama / updated: 06.05.2016
  */
+if (!defined('MODX_BASE_PATH')) { die('What are you doing? Get out of here!'); }
 
 class modxRTEbridge
 {
@@ -38,6 +39,9 @@ class modxRTEbridge
             $baseUrl = MODX_BASE_URL . $path;
         } else exit('modxRTEbridge: Path-Error');
 
+        // Object to pass vars between multiple plugin-events
+        if(!isset($modx->modxRTEbridge)) $modx->modxRTEbridge = array();
+        
         // Init language before bridge so bridge can alter translations via $this->setLang()
         $this->initLang($basePath);
 
@@ -198,7 +202,7 @@ class modxRTEbridge
     // Renders complete JS-Script
     public function getEditorScript()
     {
-        global $modx;
+        global $modx, $which_browser;
         $ph = array();
         $output = "<!-- modxRTEbridge {$this->editorKey} -->\n";
 
@@ -223,6 +227,8 @@ class modxRTEbridge
                 $ph['themeKey'] = $this->theme;
                 $ph['selector'] = $selector;
                 $ph['documentIdentifier'] = $modx->documentIdentifier;
+                $ph['manager_path'] = MGR_DIR;
+                $ph['which_browser'] = !empty($which_browser) ? $which_browser : 'mcpuk';
 
                 $ph = array_merge($ph, $this->customPlaceholders, $this->mergeParamArrays());   // Big list..
 
@@ -252,7 +258,21 @@ class modxRTEbridge
             }
 
         } else {
-           exit; // @todo: prepare for editors that need no elements
+			// No elements given - create Config-Object only 
+			$this->theme = $this->tvOptions['theme'];
+			$this->initTheme('noselector');
+			$this->renderBridgeParams('noselector');
+
+			$ph['configString'] = $this->renderConfigString();
+			$ph['configRawString'] = $this->renderConfigRawString();
+			$ph['editorKey'] = $this->editorKey;
+			$ph['themeKey'] = $this->theme;
+			
+			if (!defined($this->editorKey . '_INIT_CONFIG_' . $this->theme)) {
+				define($this->editorKey . '_INIT_CONFIG_' . $this->theme, 1);
+				$output .= file_get_contents("{$this->pluginParams['base_path']}tpl/tpl.{$this->editorKey}.config.html") ."\n";
+				$output  = $modx->parseText($output, $ph);
+			}
         }
 
         // Remove empty placeholders !
@@ -758,24 +778,40 @@ class modxRTEbridge
         return implode(',', $elements);
     }
 
-    // Helper to avoid Placeholder-/Snippet-Execution for Frontend-Editors
-    public function protectModxPhs($placeholderArr, $setSep=',', $phLink='->')
+    public function parseEditableIds($source)
+    {
+        if(!isset($_SESSION['mgrValidated'])) return $source;
+
+        $matchPhs = '~\[\*#(.*?)\*\]~'; // match [*#content*] / content
+        
+        preg_match_all($matchPhs, $source, $editableIds);
+        $this->setEditableIds($editableIds);
+        
+        $source = preg_replace($matchPhs, '<div class="editable" id="modx_$1">[*$1*]</div>', $source);
+        
+        return $source;
+    }
+
+    public function setEditableIds($editableIds)
     {
         global $modx;
 
-        if(!is_array($placeholderArr)) {
-            $editablesArr = explode($setSep, $placeholderArr);
-            foreach ($editablesArr as $idStr) {
-                $exp = explode($phLink, $idStr);
-                $editableIds[$exp[0]] = $exp[1];
-            }
-        } else {
-            $editableIds = $placeholderArr;
+        if(!empty($editableIds) && isset($editableIds[1])) {
+            foreach ($editableIds[1] as $i=>$id)
+                $modx->modxRTEbridge['editableIds'][$id] = '';
         }
+    }
 
-        foreach ($editableIds as $modxPh=>$cssId) {
-            if (isset($modx->documentObject[$modxPh]))
-                $modx->documentObject[$modxPh] = $this->protectModxPlaceholders($modx->documentObject[$modxPh]);
+    // Helper to avoid Placeholder-/Snippet-Execution for Frontend-Editors
+    public function protectModxPhs()
+    {
+        global $modx;
+
+        if(isset($modx->modxRTEbridge['editableIds']) && isset($_SESSION['mgrValidated'])) {
+            foreach ($modx->modxRTEbridge['editableIds'] as $modxPh=>$x) {
+                if (isset($modx->documentObject[$modxPh]))
+                    $modx->documentObject[$modxPh] = $this->protectModxPlaceholders($modx->documentObject[$modxPh]);
+            }
         }
     }
 
@@ -791,9 +827,16 @@ class modxRTEbridge
     {
         return str_replace(
             array('&#91;*', '*&#93;', '&#91;(', ')&#93;', '&#123;&#123;', '&#125;&#125;', '&#91;&#91;', '&#93;&#93;', '&#91;!', '!&#93;', '&#91;+', '+&#93;', '&#91;~', '~&#93;'),
-            array('[*', '*]', '[(', ')]', '{{', '}}', '[[', ']]', '[!', '!]', '[+', '+]', '[~', '~]'),
+            array('[*',     '*]',     '[(',     ')]',     '{{',           '}}',           '[[',         ']]',         '[!',     '!]',     '[+',     '+]',     '[~',     '~]'),
             $output
         );
+    }
+
+    public function prepareAjaxSecHash($docId)
+    {
+        $secHash = md5(rand(0, 999999999)+rand(0, 999999999));
+        $_SESSION['modxRTEbridge']['secHash'][$docId] = $secHash;
+        return $secHash;
     }
 
     // Handle debug-modes
@@ -833,7 +876,7 @@ class modxRTEbridge
         global $modx;
 
         $templatesArr = array();
-        /* only display if manager user is logged in */
+
         if ($modx->getLoginUserType() === 'manager') {
 
             $modx->getSettings();
@@ -881,16 +924,17 @@ class modxRTEbridge
         return $templatesArr;
     }
 
-    // Plugin-configuration: &editableIds=Editable Ids<br/>Modx-Phs->CSS-IDs;text;longtitle->#modx_longtitle,content->#modx_content
     public function saveContentProcessor($rid, $ppPluginName, $ppEditableIds='editableIds')
     {
         global $modx;
 
         if ($rid > 0 && $modx->getLoginUserType() === 'manager')
         {
-            $this->getModxPluginConfiguration($ppPluginName);
+            if(!isset($_POST['secHash']) ||
+               !isset($_SESSION['modxRTEbridge']['secHash'][$rid]) ||
+                $_POST['secHash'] != $_SESSION['modxRTEbridge']['secHash'][$rid]) return 'secHash invalid';
 
-            $editableIds = explode(',', $this->pluginParams[$ppEditableIds]);
+            $editableIds = explode(',', $_POST['phs']);
 
             if($editableIds) {
                 include_once(MODX_BASE_PATH . "assets/lib/MODxAPI/modResource.php");
@@ -898,11 +942,7 @@ class modxRTEbridge
                 $modx->doc = new modResource($modx);
                 $modx->doc->edit($rid);
 
-                foreach ($editableIds as $idStr) {
-
-                    $editable = explode('->', $idStr);
-                    $modxPh = trim($editable[0]);
-
+                foreach ($editableIds as $modxPh) {
                     if (isset($_POST[$modxPh]) && $_POST[$modxPh] != 'undefined') // Prevent if Javascript returned "undefined"
                         $modx->doc->set($modxPh, $this->unprotectModxPlaceholders($_POST[$modxPh]));
                 };

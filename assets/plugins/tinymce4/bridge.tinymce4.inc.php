@@ -16,7 +16,7 @@ class tinymce4bridge extends modxRTEbridge
             // Editor-Settings
             'editorLabel'   => 'TinyMCE4',           // Name displayed in Modx-Dropdowns - No HTML!
             'skinsDirectory'=> 'tinymce/skins',      // Relative to plugin-dir
-            'editorVersion' => '4.3.7',              // Version of TinyMCE4-Library
+            'editorVersion' => '4.3.11',              // Version of TinyMCE4-Library
             'editorLogo'    => 'tinymce/logo.png',   // Optional Image displayed in Modx-settings
             
             'bridgeParams'=>array('url_setup','style_formats','advanced_resizing','forced_root_block','contentsLangDirection','disabledButtons','selectorPrefix','selector','block_formats'),
@@ -174,6 +174,7 @@ class tinymce4bridge extends modxRTEbridge
             // Prepare Inline-Magic
         } else {
             $this->setPlaceholder('selectorPrefix', '.');   // Single selector = .editable
+            // $this->setPluginParam('elements', 'editable');  // Set missing plugin-parameter manually for Frontend
 
             $this->force('setup', NULL);               // Remove from parameters for Frontend
             $this->force('save_onsavecallback', 'function () {
@@ -229,22 +230,21 @@ class tinymce4bridge extends modxRTEbridge
         </script>
     ');
             // Prepare dataObject for submitting changes
-            $editableIds = explode(',', $this->pluginParams['editableIds']);
-            if (!empty($editableIds)) {
+            if (isset($modx->modxRTEbridge['editableIds'])) {
                 $dataEls = array();
-                foreach ($editableIds as $idStr) {
-                    $editable = explode('->', $idStr);
-                    $modxPh = trim($editable[0]);
-                    $cssId = trim($editable[1]);
-
-                    $dataEls[] = "'{$modxPh}': tinymce_clean_html_before_save( $('{$cssId}').html() )";
+                $phs = '';
+                foreach ($modx->modxRTEbridge['editableIds'] as $cssId=>$x) {
+                    $dataEls[] = "'{$cssId}': tinymce_clean_html_before_save( $('#modx_{$cssId}').html() )";
+                    $phs .= (!empty($phs) ? ',' : '') . $cssId;
                 }
-                $dataEls = join(",\n                ", $dataEls);
+                $dataEls = join(",\n                    ", $dataEls);
 
                 $this->setPlaceholder('dataObject', "
                 var data = {
                     'pluginName':'{$this->pluginParams['pluginName']}',
                     'rid':{$modx->documentIdentifier},
+                    'secHash':'{$this->prepareAjaxSecHash($modx->documentIdentifier)}',
+                    'phs':'{$phs}',
                     {$dataEls}
                 };");
             }
