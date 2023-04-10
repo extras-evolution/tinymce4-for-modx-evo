@@ -29,6 +29,7 @@ class modxRTEbridge
     public $ajaxSecHash = array();              // Holds security-hashes
     private $mgrAction = null;
     protected $modx = null;
+    protected $gSettingsRows = null;
 
     /**
      * modxRTEbridge constructor.
