@@ -164,6 +164,7 @@ class modxRTEbridge
         $this->editorKey = $editorKey;
         $this->theme = isset($this->modxParams['theme']) ? $this->modxParams['theme'] : 'base';
         $this->pluginParams = isset($this->modx->event->params) ? $this->modx->event->params : array();
+        unset($this->pluginParams['options']);
         $this->pluginParams['pluginName'] = $this->modx->event->activePlugin;
         $this->pluginParams['editorLabel'] = isset($bridgeConfig['editorLabel']) ? $bridgeConfig['editorLabel'] : 'No editorLabel set for "' . $editorKey . '"';
         $this->pluginParams['editorVersion'] = isset($bridgeConfig['editorVersion']) ? $bridgeConfig['editorVersion'] : '0.0.0';
