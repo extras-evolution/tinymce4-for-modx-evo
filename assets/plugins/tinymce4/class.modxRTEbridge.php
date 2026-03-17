@@ -676,31 +676,27 @@ class modxRTEbridge
 
         // Init langArray once
         if (empty($this->langArr)) {
-            $lang_name = $modx->config['manager_language'];
+            $lang_name = evo()->getLocale();
             $gsettings_path = $basePath . "lang/gsettings/";     // Holds general translations
             $custom_path = $basePath . "lang/custom/";        // Holds custom translations
-            $lang_file = $lang_name . '.inc.php';
-            $fallback_file = 'english.inc.php';
+            $lang_file = $lang_name . '.php';
+            $fallback_file = 'en.php';
             $lang_code = '';
 
             // Load gsettings fallback language (show at least english translations instead of empty)
             if (is_file($gsettings_path . $fallback_file)) include($gsettings_path . $fallback_file);
-            if (isset($_lang['lang_code'])) $lang_code = $_lang['lang_code'];    // Set langcode for RTE
-
+            
             // Load gsettings user language
             if (is_file($custom_path . $fallback_file)) include($custom_path . $fallback_file);
-            if (isset($_lang['lang_code'])) $lang_code = $_lang['lang_code'];    // Set langcode for RTE
-
+            
             // Load custom settings fallback language
             if (is_file($gsettings_path . $lang_file)) include($gsettings_path . $lang_file);
-            if (isset($_lang['lang_code'])) $lang_code = $_lang['lang_code'];    // Set langcode for RTE
-
+            
             // Load custom settings user language
             if (is_file($custom_path . $lang_file)) include($custom_path . $lang_file);
-            if (isset($_lang['lang_code'])) $lang_code = $_lang['lang_code'];    // Set langcode for RTE
-
+            
             $this->langArr = $_lang;
-            $this->langArr['lang_code'] = $lang_code;
+            $this->langArr['lang_code'] = $lang_name;
         };
     }
 
